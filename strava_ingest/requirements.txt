@@ -1,0 +1,4 @@
+stravalib
+flask
+fluent-logger
+uwsgi

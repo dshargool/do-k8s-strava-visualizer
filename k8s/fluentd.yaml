@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd
+  namespace: strava-logging
+  labels:
+    app: fluentd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+      - name: fluentd
+        image: fluent/fluentd
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: FLUENTD_CONF
+          value: strava_ingest.conf
+        ports:
+          - containerPort: 24224
+        volumeMounts:
+        - name: log-config
+          mountPath: "/fluentd/etc"
+          readOnly: true
+        command: ['fluent-gem install fluent-plugin-elasticsearch']
+      volumes:
+        - name: log-config
+          configMap:
+            name: fluentd-config
+            items:
+              - key: "strava_ingest.conf"
+                path: "strava_ingest.conf"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: strava-logging
+data:
+  strava_ingest.conf: |
+    <source>
+      @type forward
+      port 24224
+      bind 0.0.0.0
+    </source>
+    <match router.*>
+      @type stdout
+    </match>
+    <match>
+      @type stdout
+    </match>
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluentd-service
+  namespace: strava-logging
+  labels:
+    app: fluentd-service
+spec:
+  ports:
+  - port: 24224
+    name: fluent-tcp
+    protocol: TCP
+  - port: 24224
+    name: fluent-udp
+    protocol: UDP
+  selector:
+    app: fluentd

@@ -11,6 +11,9 @@ services:
         tag: httpd.access
     links:
       - fluentd
+    environment:
+      - STRAVA_CLIENT_ID=
+      - STRAVA_CLIENT_SECRET=
   fluentd:
     image: fluent/fluentd
     ports:
@@ -19,27 +22,3 @@ services:
       - ./fluentd:/fluentd/etc
     environment:
       - FLUENTD_CONF=strava_ingest.conf
-    links:
-      - elasticsearch
-
-  elasticsearch:
-    image: elasticsearch:7.16.2
-    ports:
-      - 9200:9200
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: localhost:24224
-        tag: httpd.access
-
-  kibana:
-    image: kibana:7.16.2
-    links:
-      - elasticsearch
-    ports:
-      - 5601:5601
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: localhost:24224
-        tag: httpd.access

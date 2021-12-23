@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: strava-ingest
+  namespace: strava-logging
+  labels:
+    app: strava-ingest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: strava-ingest
+  template:
+    metadata:
+      labels:
+        app: strava-ingest
+    spec:
+      containers:
+      - name: strava-ingest
+        image: registry.digitalocean.com/k8s-challenge/strava_ingest:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 200m
+        env:
+        - name: STRAVA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: strava-secrets
+              key: client_id
+        - name: STRAVA_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: strava-secrets
+              key: client_secret
+        ports:
+          - containerPort: 5000

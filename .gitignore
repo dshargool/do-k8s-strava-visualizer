@@ -217,4 +217,5 @@ cython_debug/
 *.sass.map
 *.scss.map
 
-# End of https://www.toptal.com/developers/gitignore/api/python,flask,sass
+### k8s ###
+secrets.yaml

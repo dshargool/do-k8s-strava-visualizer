@@ -1,5 +1,11 @@
 # do-k8s-log-monitor
 
+## Summary
+A Kubernetes stack that enables users to load their [Strava](https://www.strava.com/) activity data into ElasticSearch/Kibana for a different way of visualizing the information.
+Currently pulls in the data for the year 2021 but can be expanded upon for other years in future releases.
+
+  ![](docs/images/kibana_full_dash.png)
+
 ## Steps to setting up
 1) Learn about the EFK (Elasticsearch Fluentd Kibana) stack and the components it comprises of.
 	- Elasticsearch powers the search engine so we can find what we're looking for in our data

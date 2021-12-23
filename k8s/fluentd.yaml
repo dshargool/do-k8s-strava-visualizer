@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: fluentd
-        image: fluent/fluentd
+        image: registry.digitalocean.com/k8s-challenge/my-fluent@sha256:6869f77df617805b57ec959bcbbc68734d88dc283a956efac99faa19fc1aed71
         resources:
           limits:
             memory: 512Mi
@@ -33,7 +33,6 @@ spec:
         - name: log-config
           mountPath: "/fluentd/etc"
           readOnly: true
-        command: ['fluent-gem install fluent-plugin-elasticsearch']
       volumes:
         - name: log-config
           configMap:
@@ -55,9 +54,12 @@ data:
       bind 0.0.0.0
     </source>
     <match router.*>
-      @type stdout
+      @type elasticsearch
+      host elasticsearch
+      port 9200
+      index_name fluentd.router
     </match>
-    <match>
+    <match *.*>
       @type stdout
     </match>
 

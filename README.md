@@ -1,4 +1,4 @@
-# do-k8s-log-monitor
+# do-k8s-strava-visualizer
 
 ## Summary
 A Kubernetes stack that enables users to load their [Strava](https://www.strava.com/) activity data into ElasticSearch/Kibana for a different way of visualizing the information.
